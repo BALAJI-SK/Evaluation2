@@ -2,9 +2,9 @@
 const express = require('express');
 const app = express();
 const port = 3000;
-const routes = require('./src/routes/routes.js');
+const routes = require('./src/routers/companyRanking.router.js');
 app.use(express.json());
-app.use('/', routes);
+app.use(routes);
 app.listen(port, () => {
     console.log(`App listening on port ${port}`);
 });
