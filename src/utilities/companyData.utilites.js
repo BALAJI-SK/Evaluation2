@@ -22,20 +22,16 @@ const getCompanyDetailsUtilies = (getCompanyDetails, getCompanyData) => {
             score: scoreUtilies(getCompanyData.filter((current) => current.companyId === data.id)[0].performanceIndex),
         });
     });
-    // console.log(companyDetails);
+   return companyDetails;
 
 }
 const scoreUtilies = (data) => {
-    for (var key in json) {
-    }
-    const cpi = parseFloat(data);
+    const performanceIndex = data.reduce((PI, curr) => {
+        PI[curr.key] = curr.value;
+        return PI;
+    }, {});
+    
 
-    const cf = parseFloat(data.cf);
-    const mau = parseFloat(data.mau);
-    const roic = parseFloat(data.roic);
-    console.log(cpi);
-
-    // console.log(((cpi * 10) + (cf / 10000) + (mau * 10) + roic) / 4);
-    return 0;
+    return (((performanceIndex.cpi * 10) + (performanceIndex.cf / 10000) + (performanceIndex.mau * 10) + performanceIndex.roic) / 4);
 };
 module.exports = { createUrlCompanyData, createUrlCompanyDetails, getCompanyDetailsUtilies };

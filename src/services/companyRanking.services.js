@@ -58,7 +58,7 @@ const insertToCompanyData = async (sectorData) => {
             console.log(errors);
         });
     // console.log(getCompanyData);
-    getCompanyDetailsUtilies(getCompanyDetails, getCompanyData);
+   return getCompanyDetailsUtilies(getCompanyDetails, getCompanyData);
 
 }
 

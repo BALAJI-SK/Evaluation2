@@ -17,7 +17,7 @@ const fetchData = async (req, res) => {
         // console.log(sectorData);
         await services.insertToSectorData(sectorData);
         const companyInsertedData = await services.insertToCompanyData(sectorData);
-        res.status(200).json('Data inserted successfully');
+        res.status(200).json(companyInsertedData);
     } catch (error) {
         if (error instanceof HTTPError) {
             res.status(error.statusCode).json(error.message);
