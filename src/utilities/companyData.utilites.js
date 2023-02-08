@@ -1,17 +1,17 @@
 const url = require('url');
 const createUrlCompanyDetails = (id) => {
-    const baseUrl = 'http://54.167.46.10/company/';
+    const baseUrl = 'http://localhost:4000/company/';
     const companyUrl = `${baseUrl}${id}`;
     return companyUrl;
 }
 
-const createUrlCompanyData = (id) => {
-    const baseUrl = 'http://54.167.46.10/sector?name=';
-    const companyUrl = `${baseUrl}${id}`;
+const createUrlCompanyData = (sectorName) => {
+    const baseUrl = 'http://localhost:4000/sector?name=';
+    const companyUrl = `${baseUrl}${sectorName}`;
     return companyUrl;
 }
 const getCompanyDetailsUtilies = (getCompanyDetails, getCompanyData) => {
-    // console.log(getCompanyData);
+    //console.log(getCompanyData);
     let companyDetails = [];
     let companyScoreData = [];
     getCompanyDetails.map((data) => {
@@ -22,6 +22,7 @@ const getCompanyDetailsUtilies = (getCompanyDetails, getCompanyData) => {
             score: scoreUtilies(getCompanyData.filter((current) => current.companyId === data.id)[0].performanceIndex),
         });
     });
+    console.log(companyDetails);
    return companyDetails;
 
 }

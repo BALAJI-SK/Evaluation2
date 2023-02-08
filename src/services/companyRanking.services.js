@@ -2,25 +2,30 @@ const HTTPError = require('../utilities/errorHandling');
 // const convertorCsvToJSON = require('../utilities/covertorCsvToJSON.js');
 const { createUrlCompanyData, createUrlCompanyDetails, getCompanyDetailsUtilies } = require('../utilities/companyData.utilites.js');
 const { Sector, company } = require('../../database/models');
-const { request } = require('http');
 const axios = require('axios');
-const convertorOfCsv = async (body) => {
-    const data = convertorCsvToJSON(body);
-    if (data === undefined) {
-        throw new HTTPError(500, error.message);
-    }
-    return data;
+const utilites = require('../utilities/convertorCsvToJSON.js');
 
-}
+
 const insertToSectorData = async (sectorData) => {
-    // const sectorInsertedData = await Sector.bulkCreate({
-    //     sectorName: sectorData.company_sector,
-    // });
-    // if (sectorInsertedData === undefined) {
-    //     throw new HTTPError(500, error.message);
-    // }
-    // console.log(sectorData);
-};
+    const sectorName = [];
+
+    sectorData.map((data) => {
+        if (sectorName.includes(data.company_sector)) {
+            return;
+        } else {
+            sectorName.push(data.company_sector);
+        }
+    });
+    sectorName.map(async (data) => {
+        const sectorInsertedData = await Sector.create({
+            sectorName: data,
+        });
+
+        if (sectorInsertedData === undefined) {
+            throw new HTTPError(500, error.message);
+        }
+    });
+}
 const insertToCompanyData = async (sectorData) => {
     let getCompanyDetails = [];
 
@@ -36,11 +41,10 @@ const insertToCompanyData = async (sectorData) => {
             });
         }))
         .catch((errors) => {
-            console.log(errors);
+            new HTTPError(404, errors);
         });
     //  console.log(getCompanyDetails);
     urldata = [];
-    let company = [];
 
     sectorData.map((data) => {
         urldata.push(createUrlCompanyData(data.company_sector));
@@ -55,41 +59,25 @@ const insertToCompanyData = async (sectorData) => {
             });
         })
         .catch((errors) => {
-            console.log(errors);
+            new HTTPError(404, errors);
         });
     // console.log(getCompanyData);
-   return getCompanyDetailsUtilies(getCompanyDetails, getCompanyData);
+    getCompanyData = getCompanyDetailsUtilies(getCompanyDetails, getCompanyData);
+    return getCompanyData;
+
 
 }
-
+const fecthingGivenUrlData = async (urlLink) => {
+    let sectorData = [];
+    await axios.get(urlLink)
+        .then((response) => {
+            sectorData = utilites.convertorCsvToJSON(response.data);
+        });
+    return sectorData;
+}
 
 module.exports = {
-    convertorOfCsv,
     insertToSectorData,
-    insertToCompanyData
+    insertToCompanyData,
+    fecthingGivenUrlData
 };
-const convertorCsvToJSON = (csv) => {
-
-    var lines = csv.split("\n");
-
-    var result = [];
-
-
-    var headers = lines[0].split(",");
-
-    for (var i = 1; i < lines.length; i++) {
-
-        var obj = {};
-        var currentline = lines[i].split(",");
-
-        for (var j = 0; j < headers.length; j++) {
-            obj[headers[j]] = currentline[j];
-        }
-
-        result.push(obj);
-
-    }
-
-    //return result; //JavaScript object
-    return JSON.stringify(result); //JSON
-}

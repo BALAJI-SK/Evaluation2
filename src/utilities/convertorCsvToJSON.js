@@ -24,4 +24,4 @@ const convertorCsvToJSON = (csv) => {
     //return result; //JavaScript object
     return (result); //JSON
 }
-module.exports = convertorCsvToJSON;
+module.exports = { convertorCsvToJSON };
